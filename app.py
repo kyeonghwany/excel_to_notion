@@ -44,10 +44,10 @@ def convert_to_csv(df: pd.DataFrame) -> bytes:
 
 def main() -> None:
     st.set_page_config(page_title="Excel to CSV Converter", page_icon="📁", layout="centered")
-    st.title("📁 Excel → CSV 변환기")
-    st.write("엑셀 파일을 업로드하고 전처리 후 CSV로 다운로드하세요.")
+    st.title("📁 Plasys 데이터 변환기")
+    st.write("Plasys에서 데이터를 다운받아 엑셀 파일을 업로드하세요.")
 
-    uploaded_file = st.file_uploader("엑셀 파일을 업로드하세요", type=["xls", "xlsx"])
+    uploaded_file = st.file_uploader("엑셀 파일을 업로드하세요.", type=["xls", "xlsx"])
     if uploaded_file is None:
         st.info(".xls 또는 .xlsx 파일을 선택해주세요.")
         return
@@ -73,6 +73,13 @@ def main() -> None:
         type="primary",
     )
 
+    st.download_button(
+        label="XLSX로 다운로드",
+        data=csv_bytes,
+        file_name="converted.csv",
+        mime="text/csv",
+        type="primary",
+    )
 
 if __name__ == "__main__":
     main()
