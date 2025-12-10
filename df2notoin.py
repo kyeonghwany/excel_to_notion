@@ -146,7 +146,6 @@ def value_to_notion_property(
         return {
             "date": {
                 "start": _to_iso_date(value),
-                # end, time zone 등은 필요시 추가
             }
         }
 
