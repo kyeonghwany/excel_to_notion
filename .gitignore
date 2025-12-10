@@ -2,5 +2,5 @@ __pycache__/
 *.pyc
 .env
 .streamlit/
-test.ipynb
+*.ipynb
 *.xls
