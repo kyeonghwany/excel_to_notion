@@ -32,12 +32,8 @@ def preprocess_reservation(df: pd.DataFrame) -> pd.DataFrame:  # noqa: F811
     df["차트번호"] = df["차트번호"].astype(int)
     df["상태"] = df["상태"].astype(int)
     df["상태"] = df["상태"].map(state_code)
-    df["핸드폰"] = (
-        df["핸드폰"]
-        .astype("string").map(lambda x: "" if pd.isna(x) else str(x)))
-    df["생년월일"] = (
-        df["생년월일"]
-        .astype("string"))
+    df["핸드폰"] = ":"+ df["핸드폰"].astype("string")
+    df["생년월일"] = ":" + df["생년월일"].astype("string")
 
     return df
 
