@@ -1,6 +1,6 @@
 import pandas as pd
 
-def preprocess_reservation(df: pd.DataFrame) -> pd.DataFrame:  # noqa: F811
+def preprocess_reservation(df: pd.DataFrame) -> pd.DataFrame:
     
     state_code = {
         1: "예약",
@@ -26,7 +26,7 @@ def preprocess_reservation(df: pd.DataFrame) -> pd.DataFrame:  # noqa: F811
         df["시간"]
         .str.replace("오전", "AM")
         .str.replace("오후", "PM"),
-        format="%Y-%m-%d %p %H:%M"
+        format="%Y-%m-%d %p %I:%M"
     )
 
     df = df.drop_duplicates(subset=["reservation_id"], keep="first").loc[:,["차트번호", "고객명", "reservation_id", "구분", "상태", "예약일시", "등록일시", "생년월일", "핸드폰", "원장", "상담자", "메모"]]
