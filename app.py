@@ -13,7 +13,7 @@ from preprocess import preprocess_reservation, preprocess_event, preprocess_cust
 def read_excel(file) -> Optional[pd.DataFrame]:
     """Read the uploaded Excel file into a DataFrame with basic error handling."""
     try:
-        return pd.read_excel(file)
+        return pd.read_excel(file, dtype={"생년월일": object, "핸드폰": object})
     except Exception as exc:  # pragma: no cover - user facing
         st.error(f"엑셀 파일을 읽는 중 오류가 발생했습니다: {exc}")
         return None
