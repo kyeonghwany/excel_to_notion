@@ -8,17 +8,7 @@ import pandas as pd
 import streamlit as st
 
 from df2notoin import upload_dataframe_to_notion_data_source 
-
-
-def preprocess_dataframe(df: pd.DataFrame) -> pd.DataFrame:
-    
-    df = df.rename(columns={"No.": "차트번호"}).iloc[:-1]
-    df["예약일시"] = df.예약일 + " " + df.시간 + ":00.000+09:00"
-    df["등록일"] = df["등록일시"].str[:10]
-    df["차트번호"] = df["차트번호"].astype(int)
-    df = df.loc[:,["등록일", "예약일시", "차트번호", "고객명", "구분", "상태", "상담자", "원장", "성별", "나이", "핸드폰", "주소", "국가", "사진"]]
-    
-    return df
+from preprocess import preprocess_reservation, preprocess_event, preprocess_customer
 
 def read_excel(file) -> Optional[pd.DataFrame]:
     """Read the uploaded Excel file into a DataFrame with basic error handling."""
@@ -27,7 +17,6 @@ def read_excel(file) -> Optional[pd.DataFrame]:
     except Exception as exc:  # pragma: no cover - user facing
         st.error(f"엑셀 파일을 읽는 중 오류가 발생했습니다: {exc}")
         return None
-
 
 def convert_to_csv(df: pd.DataFrame) -> bytes:
     """Convert DataFrame to CSV bytes without the index column."""
@@ -56,7 +45,7 @@ def main() -> None:
     st.dataframe(df.head())
 
     st.subheader("전처리된 데이터")
-    processed_df = preprocess_dataframe(df.copy())
+    processed_df = preprocess_customer(preprocess_reservation(df.copy()))
     st.dataframe(processed_df.head())
 
     csv_bytes = convert_to_csv(processed_df)
