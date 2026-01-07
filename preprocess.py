@@ -13,7 +13,8 @@ def preprocess_reservation(df: pd.DataFrame) -> pd.DataFrame:  # noqa: F811
         13: "재상담",
         16: "동행",
         17: "비대면",
-        21: "모델"
+        21: "모델",
+        24: "부재"
     }
 
     df = df.rename(columns={"챠트": "차트번호", "분류": "구분"})
