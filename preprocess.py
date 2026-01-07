@@ -28,7 +28,7 @@ def preprocess_reservation(df: pd.DataFrame) -> pd.DataFrame:  # noqa: F811
         format="%Y-%m-%d %p %H:%M"
     )
 
-    df = df.drop_duplicates(subset=["reservation_id"], keep="first").loc[:,["차트번호", "reservation_id", "구분", "상태", "예약일시", "등록일시", "생년월일", "핸드폰", "원장", "상담자", "메모"]]
+    df = df.drop_duplicates(subset=["reservation_id"], keep="first").loc[:,["차트번호", "고객명", "reservation_id", "구분", "상태", "예약일시", "등록일시", "생년월일", "핸드폰", "원장", "상담자", "메모"]]
     df["차트번호"] = df["차트번호"].astype(int)
     df["상태"] = df["상태"].astype(int)
     df["상태"] = df["상태"].map(state_code)
@@ -44,7 +44,7 @@ def preprocess_event(df: pd.DataFrame) -> pd.DataFrame:
     df["event_time"] = pd.NaT
     df["event_exp_time"] = pd.NaT
     df["event_params"] = None
-    df = df.loc[:,["차트번호", "reservation_id", "구분", "상태", "예약일시", "등록일시", "event_id", "event_name", "event_time", "event_exp_time", "event_params"]]
+    df = df.loc[:,["차트번호", "고객명", "reservation_id", "구분", "상태", "예약일시", "등록일시", "event_id", "event_name", "event_time", "event_exp_time", "event_params"]]
     
     return df
 
@@ -56,6 +56,7 @@ def preprocess_customer(df: pd.DataFrame) -> pd.DataFrame:
         df[~ df["상태"].isin(exclude_status)]
         .groupby("차트번호", as_index=False)
         .agg({
+            "고객명": "first",
             "reservation_id": "first",
             "구분": lambda s: ">".join(pd.unique(s.dropna().astype(str))),
             "상태": "first",
