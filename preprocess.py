@@ -68,5 +68,7 @@ def preprocess_customer(df: pd.DataFrame) -> pd.DataFrame:
             "상담자": "first"
             }))
     
+    df_summary["예약일시"] = df_summary["예약일시"].astype(str) + ".000+09:00"
+
     return df_summary
     
