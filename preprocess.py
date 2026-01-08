@@ -52,7 +52,7 @@ def preprocess_event(df: pd.DataFrame) -> pd.DataFrame:
 def preprocess_customer(df: pd.DataFrame) -> pd.DataFrame:
     
     exclude_status = {"취소", "변경", "부도"}
-
+    df.loc[df["구분"] == "부재", "구분"] = "수술상담"
     df_summary = (
         df[~ df["상태"].isin(exclude_status)]
         .groupby("차트번호", as_index=False)
