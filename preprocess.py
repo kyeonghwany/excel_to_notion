@@ -23,7 +23,7 @@ def preprocess_reservation(df: pd.DataFrame, today = None) -> pd.DataFrame:
     df = df.rename(columns={"챠트": "차트번호", "분류": "구분"})
     df["reservation_id"] = df["지점"].notna().cumsum()
     df["시간"] = df["시간"].ffill()
-    
+
     df["예약일시"] = pd.to_datetime(
         today + " " +
         df["시간"]
@@ -33,6 +33,7 @@ def preprocess_reservation(df: pd.DataFrame, today = None) -> pd.DataFrame:
     )
 
     df = df.drop_duplicates(subset=["reservation_id"], keep="first").loc[:,["차트번호", "고객명", "reservation_id", "구분", "상태", "예약일시", "등록일시", "생년월일", "핸드폰", "원장", "상담자", "메모"]]
+    df = df[df["차트번호"].notna()].copy()
     df["차트번호"] = df["차트번호"].astype(int)
     df["상태"] = df["상태"].astype(int)
     df["상태"] = df["상태"].map(state_code)
