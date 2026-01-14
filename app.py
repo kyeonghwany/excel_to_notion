@@ -8,7 +8,7 @@ import pandas as pd
 import streamlit as st
 
 from df2notoin import upload_dataframe_to_notion_data_source 
-from preprocess import preprocess_reservation, preprocess_event, preprocess_customer
+from preprocess import preprocess_reservation, preprocess_customer
 
 def read_excel(file) -> Optional[pd.DataFrame]:
     """Read the uploaded Excel file into a DataFrame with basic error handling."""
@@ -27,12 +27,12 @@ def convert_to_csv(df: pd.DataFrame) -> bytes:
 NOTION_TOKEN = st.secrets["NOTION_TOKEN"]
 DATA_SOURCE_ID = st.secrets["DATA_SOURCE_ID"]
 
-def main() -> None:
+def st_excel_to_notion(key = None, data_source_id = None,  notion_key = None):
     st.set_page_config(page_title="Excel to CSV Converter", page_icon="📁", layout="centered")
-    st.title("📁 Plasys 데이터 변환기")
-    st.write("Plasys에서 데이터를 다운받아 엑셀 파일을 업로드하세요.")
+    st.title("📁 Plasys 예약목록 노션 업로드")
+    st.write("Plasys에서 예약목록 엑셀 파일을 다운받아 여기에 업로드하세요.")
 
-    uploaded_file = st.file_uploader("엑셀 파일을 업로드하세요.", type=["xls", "xlsx"])
+    uploaded_file = st.file_uploader("엑셀 파일을 업로드하세요.", type=["xls", "xlsx"], key = f"uploader_{key}")
     if uploaded_file is None:
         st.info(".xls 또는 .xlsx 파일을 선택해주세요.")
         return
@@ -55,18 +55,24 @@ def main() -> None:
         data=csv_bytes,
         file_name="converted.csv",
         mime="text/csv",
-        type="primary")
+        type="primary",
+        key = f"download_{key}")
 
     st.subheader("Notion 업로드")
-    st.info(f"전체 {len(processed_df)}개의 데이터가 Notion에 업로드 중 입니다.")
+    st.info(f"전체 {len(processed_df)}개의 데이터가 Notion에 업로드 예정입니다.")
+    if st.button("Notion에 업로드", key=f"btn_upload_{key}", type="primary"):
 
-    page_ids = upload_dataframe_to_notion_data_source(
-        processed_df,
-        data_source_id = DATA_SOURCE_ID,
-        token = NOTION_TOKEN)
+        st.info(f"전체 {len(processed_df)}개의 데이터가 Notion에 업로드 중 입니다.")
+        page_ids = upload_dataframe_to_notion_data_source(
+            processed_df,
+            data_source_id = str(data_source_id),
+            token = notion_key
+        )
+        messege = f"전체 {len(processed_df)}개의 데이터가 Notion에 {len(page_ids)}개의 페이지로 업로드되었습니다."
+        st.success(messege)
 
-    messege = f"전체 {len(processed_df)}개의 데이터가 Notion에 {len(page_ids)}개의 페이지로 업로드되었습니다."
-    st.success(messege)
+def main() -> None:
+    st_excel_to_notion("1", DATA_SOURCE_ID, NOTION_TOKEN)
 
 if __name__ == "__main__":
     main()
