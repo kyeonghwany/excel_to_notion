@@ -1,6 +1,6 @@
 import pandas as pd
 
-def preprocess_reservation(df: pd.DataFrame) -> pd.DataFrame:
+def preprocess_reservation(df: pd.DataFrame, today = None) -> pd.DataFrame:
     
     state_code = {
         1: "예약",
@@ -17,10 +17,13 @@ def preprocess_reservation(df: pd.DataFrame) -> pd.DataFrame:
         24: "부재"
     }
 
+    if today is None:
+        today = pd.Timestamp.today().strftime("%Y-%m-%d")
+
     df = df.rename(columns={"챠트": "차트번호", "분류": "구분"})
     df["reservation_id"] = df["지점"].notna().cumsum()
     df["시간"] = df["시간"].ffill()
-    today = pd.Timestamp.today().strftime("%Y-%m-%d")
+    
     df["예약일시"] = pd.to_datetime(
         today + " " +
         df["시간"]

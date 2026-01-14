@@ -32,6 +32,9 @@ def st_excel_to_notion(key = None, data_source_id = None,  notion_key = None):
     st.title("📁 Plasys 예약목록 노션 업로드")
     st.write("Plasys에서 예약목록 엑셀 파일을 다운받아 여기에 업로드하세요.")
 
+    selected_date = st.date_input("예약목록 날짜",value=pd.Timestamp.today(),key=f"date{key}")
+    selected_date = selected_date.strftime("%Y-%m-%d")
+
     uploaded_file = st.file_uploader("엑셀 파일을 업로드하세요.", type=["xls", "xlsx"], key = f"uploader_{key}")
     if uploaded_file is None:
         st.info(".xls 또는 .xlsx 파일을 선택해주세요.")
@@ -45,7 +48,7 @@ def st_excel_to_notion(key = None, data_source_id = None,  notion_key = None):
     st.dataframe(df.head())
 
     st.subheader("전처리된 데이터")
-    processed_df = preprocess_customer(preprocess_reservation(df.copy()))
+    processed_df = preprocess_customer(preprocess_reservation(df.copy(), today = selected_date))
     st.dataframe(processed_df.head())
 
     csv_bytes = convert_to_csv(processed_df)
