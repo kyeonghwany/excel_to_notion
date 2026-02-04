@@ -14,7 +14,9 @@ def preprocess_reservation(df: pd.DataFrame, today = None) -> pd.DataFrame:
         16: "동행",
         17: "비대면",
         21: "모델",
-        24: "부재"
+        24: "부재",
+        25: "페이스온",
+        26: "보류"
     }
 
     if today is None:
